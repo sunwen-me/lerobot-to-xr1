@@ -1,0 +1,19 @@
+name: syntax-and-cli-smoke
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m compileall -q scripts
+      - run: python scripts/convert_rwrl_so101_official_urdf.py --help
+      - run: python scripts/official_urdf_reconvert_one_episode.py --help
+      - run: python scripts/validate_official_urdf_conversion.py --help
