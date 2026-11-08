@@ -13,7 +13,7 @@ The converter reads the original LeRobot Parquet joint state/action arrays and a
 - Only `proprios.{left,right}_ee_{pos,rotm}` and `actions.{left,right}_ee_{pos,rotm}` are replaced. Joint arrays, gripper arrays, instruction/schema, and video references are retained from the original XR-1 JSON.
 - All source episodes are converted; the converter does not filter success/failure labels.
 
-The calibrated URDF is intentionally not bundled. Supply the exact `so101_new_calib.urdf` used for validation (SHA-256: `3a65d2d35e68a8d2f0c2cc176d19b884506543c93ba72980145b80abe276022c`). A different URDF or zero convention changes the EE labels.
+The calibrated URDF is intentionally not bundled. Supply a URDF named `so101_new_calib.urdf`. The converter checks only this filename; it records the file's SHA-256 in the manifest for traceability but does not enforce it. A different URDF or zero convention changes the EE labels.
 
 ## Install
 

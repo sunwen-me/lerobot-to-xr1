@@ -19,6 +19,7 @@ import pyarrow.parquet as pq
 
 HERE = Path(__file__).resolve().parent
 RECONVERTER = HERE / "official_urdf_reconvert_one_episode.py"
+EXPECTED_URDF_FILENAME = "so101_new_calib.urdf"
 
 
 def load_reconverter(path: Path):
@@ -150,6 +151,12 @@ def main() -> None:
     for required in (args.dataset_dir / "meta/info.json", args.urdf, args.old_json_dir):
         if not required.exists():
             raise FileNotFoundError(required)
+    if args.urdf.name != EXPECTED_URDF_FILENAME:
+        raise ValueError(
+            f"expected URDF filename {EXPECTED_URDF_FILENAME!r}, got {args.urdf.name!r}. "
+            "Conversion stopped before creating or modifying output files."
+        )
+    urdf_sha256 = hashlib.sha256(args.urdf.read_bytes()).hexdigest()
     info_path = args.dataset_dir / "meta/info.json"
     info = json.loads(info_path.read_text(encoding="utf-8"))
     module = load_reconverter(RECONVERTER)
@@ -191,7 +198,7 @@ def main() -> None:
         "converted_episodes": len(results),
         "converted_frames": sum(item["num_frames"] for item in results),
         "official_urdf": str(args.urdf),
-        "official_urdf_sha256": hashlib.sha256(args.urdf.read_bytes()).hexdigest(),
+        "official_urdf_sha256": urdf_sha256,
         "ee_frame": "gripper_frame_link",
         "joint_limits_used_for_filtering_or_rejection": False,
         "legacy_source_json_dir": str(args.old_json_dir),
